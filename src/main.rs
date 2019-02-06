@@ -21,13 +21,14 @@ fn memory_map(bt: &BootServices) {
     let map_size = bt.memory_map_size();
 
     // Build a buffer bigger enough to handle the memory map
-    let mut buffer = Vec::with_capacity(map_size);
+    let mut buffer = Vec::with_capacity(map_size + 7);
+    let off = (buffer.as_ptr() as usize) % 8;
     unsafe {
-        buffer.set_len(map_size);
+        buffer.set_len(map_size + off);
     }
 
     let (_, desc_iter) = bt
-        .memory_map(&mut buffer)
+        .memory_map(&mut buffer[off..])
         .expect("Failed to retrieve UEFI memory map")
         .split().1;
 
