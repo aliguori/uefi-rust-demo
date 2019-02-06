@@ -1,4 +1,4 @@
-Prerequesites
+Prerequisites
 -------------
 You need a nightly rust toolchain installed (use rustup for that) and QEMU.
 
