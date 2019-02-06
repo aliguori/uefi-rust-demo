@@ -12,6 +12,8 @@ use uefi::prelude::*;
 use uefi::table::boot::MemoryType;
 use crate::alloc::vec::Vec;
 
+use x86_64::instructions::port::Port;
+
 const EFI_PAGE_SIZE: u64 = 0x1000;
 
 fn memory_map(bt: &BootServices) {
@@ -63,6 +65,11 @@ pub extern "win64" fn uefi_start(_image_handle: uefi::Handle, system_table: Syst
     }
 
     memory_map(system_table.boot_services());
+    
+    let mut port = Port::<u32>::new(0xf4);
+    unsafe {
+        port.write(0);
+    }
     
     loop {};
 }
