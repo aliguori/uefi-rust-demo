@@ -1,0 +1,10 @@
+[package]
+name = "uefi-app"
+version = "0.1.0"
+authors = ["Anthony Liguori <aliguori@amazon.com>"]
+edition = "2018"
+
+[dependencies]
+uefi = { path = "./uefi-rs" }
+uefi-services = { path = "./uefi-rs/uefi-services" }
+log = { version = "0.4", default-features = false }
