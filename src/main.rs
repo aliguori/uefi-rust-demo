@@ -24,7 +24,7 @@ fn memory_map(bt: &BootServices) {
         buffer.set_len(map_size);
     }
 
-    let (_k, mut desc_iter) = bt
+    let (_, desc_iter) = bt
         .memory_map(&mut buffer)
         .expect("Failed to retrieve UEFI memory map")
         .split().1;
@@ -35,7 +35,7 @@ fn memory_map(bt: &BootServices) {
     // Don't print out everything, the memory map is probably pretty big
     // (e.g. OVMF under QEMU returns a map with nearly 50 entries here).
     info!("efi: usable memory ranges ({} total)", desc_iter.len());
-    for (j, descriptor) in desc_iter.enumerate() {
+    for (_, descriptor) in desc_iter.enumerate() {
         match descriptor.ty {
             MemoryType::CONVENTIONAL => {
                 let size = descriptor.page_count * EFI_PAGE_SIZE;
@@ -50,7 +50,9 @@ fn memory_map(bt: &BootServices) {
 #[no_mangle]
 pub extern "win64" fn uefi_start(_image_handle: uefi::Handle, system_table: SystemTable<Boot>) -> ! {
     // Initialize logging.
-    uefi_services::init(&system_table);
+    uefi_services::init(&system_table)
+        .unwrap()
+        .expect("Failed to initialize");
 
     // Print out the UEFI revision number
     {
